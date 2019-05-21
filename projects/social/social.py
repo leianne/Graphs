@@ -78,9 +78,8 @@ class SocialGraph:
         # 1 - 3 - 4
         
         q = Queue() # []
-        q.enqueue(userID) #[1]
+        q.enqueue([userID]) #[1]
         visited = {}  # Note that this is a dictionary, not a set
-
         # What we are trying to return 
         # {1: {8, 10, 5}, 2: {10, 5, 7}, 3: {4}, 4: {9, 3}, 5: {8, 1, 2}, 6: {10}, 7: {2}, 8: {1, 5}, 9: {4}, 10: {1, 2, 6}}
         # VISITED 
@@ -89,14 +88,18 @@ class SocialGraph:
         # If user not in visited add to visited
         # !!!! IMPLEMENT ME
         while q.size() > 0:
-            userID = q.dequeue() 
-            user = userID[-1]
-            print(f"USER ID{user}")
-            if userID not in visited:
-                visited[userID] = [userID]
-                for i in self.friendships[userID]:
-                    q.enqueue(i)
-            
+            path = q.dequeue() 
+            current = path[-1]
+            print(f'PATH: {path}')
+            print(f'CURRENT: {current}')
+            print(f'VISITED: {visited}')
+            if current not in visited:
+                visited[current] = path
+                print(f'FRIENDSHIPS {self.friendships[current]}')
+                for i in self.friendships[current]:
+                    print(f'TEST: {[current] + [i]}')
+                    q.enqueue([current] + [i])
+                    print(f'QUEUE: {q.queue}')
 
             # print(f'Visited : {visited}')
             # print(f'Queue: {q.queue}')
