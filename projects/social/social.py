@@ -1,4 +1,5 @@
-
+import random
+from queue import Queue
 
 class User:
     def __init__(self, name):
@@ -47,8 +48,20 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
-
+        for i in range(0, numUsers):
+            self.addUser(f'User {i}')
         # Create friendships
+        possibleFriendships = []
+
+        for userID in self.users:
+            # for friendID in range(1, 2):
+            for friendID in range(userID + 1, self.lastID + 1):
+                possibleFriendships.append((userID, friendID))
+
+        random.shuffle(possibleFriendships)
+        for i in range(numUsers * avgFriendships //2):
+            friendship = possibleFriendships[i]
+            self.addFriendship(friendship[0], friendship[1])
 
     def getAllSocialPaths(self, userID):
         """
@@ -59,14 +72,42 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
+
+        # {1: {2, 3, 4}, 2: {1, 5}, 3: {1, 4}, 4: {1, 3}, 5: {2}}
+        # 1 - 2 - 5
+        # 1 - 3 - 4
+        
+        q = Queue() # []
+        q.enqueue(userID) #[1]
         visited = {}  # Note that this is a dictionary, not a set
+
+        # What we are trying to return 
+        # {1: {8, 10, 5}, 2: {10, 5, 7}, 3: {4}, 4: {9, 3}, 5: {8, 1, 2}, 6: {10}, 7: {2}, 8: {1, 5}, 9: {4}, 10: {1, 2, 6}}
+        # VISITED 
+        # {1: [1], 8: [1, 8], 10: [1, 10], 5: [1, 5], 2: [1, 10, 2], 6: [1, 10, 6], 7: [1, 10, 2, 7]}
+        # [] Grap 1st User from queue
+        # If user not in visited add to visited
         # !!!! IMPLEMENT ME
+        while q.size() > 0:
+            userID = q.dequeue() 
+            user = userID[-1]
+            print(f"USER ID{user}")
+            if userID not in visited:
+                visited[userID] = [userID]
+                for i in self.friendships[userID]:
+                    q.enqueue(i)
+            
+
+            # print(f'Visited : {visited}')
+            # print(f'Queue: {q.queue}')
+            # print(f'self.friendships: {self.friendships[userID]}')     
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populateGraph(10, 2)
+    # sg.populateGraph(10, 3)
+    sg.friendships = {1: {8, 10, 5}, 2: {10, 5, 7}, 3: {4}, 4: {9, 3}, 5: {8, 1, 2}, 6: {10}, 7: {2}, 8: {1, 5}, 9: {4}, 10: {1, 2, 6}}
     print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
-    print(connections)
+    print(f' connections {connections}')
