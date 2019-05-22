@@ -90,17 +90,12 @@ class SocialGraph:
         while q.size() > 0:
             path = q.dequeue() 
             current = path[-1]
-            print(f'PATH: {path}')
-            print(f'CURRENT: {current}')
-            print(f'VISITED: {visited}')
             if current not in visited:
                 visited[current] = path
-                print(f'FRIENDSHIPS {self.friendships[current]}')
                 for i in self.friendships[current]:
-                    print(f'TEST: {[current] + [i]}')
-                    q.enqueue([current] + [i])
-                    print(f'QUEUE: {q.queue}')
-
+                    path_copy = path.copy()
+                    path_copy.append(i)
+                    q.enqueue(path_copy)
             # print(f'Visited : {visited}')
             # print(f'Queue: {q.queue}')
             # print(f'self.friendships: {self.friendships[userID]}')     
